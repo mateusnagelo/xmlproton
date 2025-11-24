@@ -1,18 +1,25 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '../components/ui/button';
 import { DatePicker } from '../components/ui/date-picker';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { incrementConsultas, incrementErros } from '../services/statsService';
 
+interface ReportData {
+  id: number;
+  date: string;
+  total: number;
+  items: number;
+}
+
 const RelatorioXmls = () => {
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
-  const [reportData, setReportData] = useState<any[]>([]);
+  const [reportData, setReportData] = useState<ReportData[]>([]);
 
   const handleGenerateReport = () => {
     try {
       // Lógica de geração de relatório (simulada)
-      const mockData = [
+      const mockData: ReportData[] = [
         { id: 1, date: '2024-07-20', total: 150.0, items: 5 },
         { id: 2, date: '2024-07-21', total: 250.5, items: 8 },
       ];

@@ -7,7 +7,7 @@ const api = axios.create({
   },
 });
 
-export const startNfeSearch = async (chave) => {
+export const startNfeSearch = async (chave: string) => {
   try {
     const response = await api.put(`/fd/add/${chave}`);
     return response.data;
@@ -17,7 +17,7 @@ export const startNfeSearch = async (chave) => {
   }
 };
 
-export const checkNfeStatus = async (chave) => {
+export const checkNfeStatus = async (chave: string) => {
   try {
     const response = await api.put(`/fd/add/${chave}`);
     return response.data;
@@ -27,18 +27,18 @@ export const checkNfeStatus = async (chave) => {
   }
 };
 
-export const getNfeData = async (chave) => {
+export const getNfeData = async (chave: string) => {
   const response = await api.get(`/fd/get/xml/${chave}`);
   return response.data;
 };
 
-export const getNfePdfData = async (chave) => {
+export const getNfePdfData = async (chave: string) => {
   const response = await api.get(`/fd/get/da/${chave}`);
   return response.data;
 };
 
 export const validateXml = async (file: File): Promise<{ success: boolean; message: string }> => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       if (file.name.includes('invalid')) {
         resolve({ success: false, message: 'Erro: Estrutura do XML inválida.' });

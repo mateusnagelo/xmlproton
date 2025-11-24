@@ -4,12 +4,12 @@ import { Send, Mail, Linkedin, Github, Phone } from 'lucide-react';
 const Contato = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log('Formulário enviado:', formData);
     alert('Mensagem enviada com sucesso!');
@@ -88,7 +88,7 @@ const Contato = () => {
             </div>
             <div>
               <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-1">Mensagem</label>
-              <textarea id="message" name="message" value={formData.message} onChange={handleChange} required rows="5" className="mt-1 block w-full px-4 py-3 bg-[#161b22] border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-white"></textarea>
+              <textarea id="message" name="message" value={formData.message} onChange={handleChange} required rows={5} className="mt-1 block w-full px-4 py-3 bg-[#161b22] border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-white"></textarea>
             </div>
             <button type="submit" className="w-full flex justify-center items-center px-6 py-4 border border-transparent text-lg font-semibold rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-gray-800 transition-transform transform hover:scale-105">
               <Send className="w-5 h-5 mr-3" />

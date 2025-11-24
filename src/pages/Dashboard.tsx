@@ -1,8 +1,19 @@
 import { Download, Search, FileCheck, AlertTriangle } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import { getStats } from '../services/statsService';
 
-const StatCard = ({ icon, title, subtitle, value, progress, lastUpdate, buttonText }) => (
+interface StatCardProps {
+  icon: ReactNode;
+  title: string;
+  subtitle: string;
+  value: number;
+  progress: number;
+  lastUpdate: string;
+  buttonText: string;
+}
+
+const StatCard = ({ icon, title, subtitle, value, progress, lastUpdate, buttonText }: StatCardProps) => (
   <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex flex-col">
     <div className="flex items-start justify-between mb-4">
       <div className="flex items-center">
@@ -32,12 +43,12 @@ const StatCard = ({ icon, title, subtitle, value, progress, lastUpdate, buttonTe
 );
 
 const Dashboard = () => {
-  const [stats, setStats] = useState<any[]>([]);
+  const [stats, setStats] = useState<StatCardProps[]>([]);
 
   useEffect(() => {
     const fetchStats = () => {
       const data = getStats();
-      const formattedStats = [
+      const formattedStats: StatCardProps[] = [
         {
           icon: <Search size={24} className="text-blue-600" />,
           title: 'Consultas Realizadas',

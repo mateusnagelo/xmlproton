@@ -4,13 +4,18 @@ import { UploadCloud, File, X, CheckCircle, AlertTriangle, Loader } from 'lucide
 import { validateXml } from '../services/api';
 import { incrementValidacoes, incrementErros } from '../services/statsService';
 
+interface ValidationResult {
+  success: boolean;
+  message: string;
+}
+
 const Validacao = () => {
-  const [files, setFiles] = useState([]);
-  const [validationResult, setValidationResult] = useState(null);
-  const [error, setError] = useState(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = useCallback((acceptedFiles: File[]) => {
     setFiles(acceptedFiles.map(file => Object.assign(file, {
       preview: URL.createObjectURL(file)
     })));
@@ -51,7 +56,7 @@ const Validacao = () => {
       } else {
         incrementErros();
       }
-    } catch (err) {
+    } catch (err: any) {
       setError('Ocorreu um erro inesperado durante a validação.');
       incrementErros();
     } finally {

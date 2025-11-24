@@ -7,24 +7,39 @@ import {
   getNfePdfData,
 } from '../services/api.ts';
 
+interface NFeData {
+  emitente: string;
+  destinatario: string;
+  valor: string;
+  emissao: string;
+  numero: string;
+  cnpj: string;
+}
+
+interface Result {
+  danfeUrl: string | null;
+  xmlText: string;
+  pdfBase64: string;
+}
+
 const Download = () => {
   const [chave, setChave] = useState('');
   const [loading, setLoading] = useState(false);
   const [polling, setPolling] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState(null);
+  const [result, setResult] = useState<Result | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const addToHistory = (item) => {
-    let history = JSON.parse(localStorage.getItem('nfeHistory')) || [];
+  const addToHistory = (item: any) => {
+    let history = JSON.parse(localStorage.getItem('nfeHistory') || '[]');
     // Remove a nota antiga, se existir
-    history = history.filter(h => h.chave !== item.chave);
+    history = history.filter((h: any) => h.chave !== item.chave);
     const updatedHistory = [item, ...history];
     localStorage.setItem('nfeHistory', JSON.stringify(updatedHistory));
     window.dispatchEvent(new Event('storage')); // Notifica outras abas
   };
 
-  const pollStatus = async (chave) => {
+  const pollStatus = async (chave: string) => {
     setPolling(true);
     const intervalId = setInterval(async () => {
       try {
@@ -45,9 +60,9 @@ const Download = () => {
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(xmlText, "application/xml");
 
-            const getTagValue = (tag) => xmlDoc.getElementsByTagName(tag)[0]?.textContent || '';
+            const getTagValue = (tag: string) => xmlDoc.getElementsByTagName(tag)[0]?.textContent || '';
 
-            const nfeData = {
+            const nfeData: NFeData = {
               emitente: '',
               destinatario: '',
               valor: `R$ ${parseFloat(getTagValue('vNF')).toFixed(2)}`,
@@ -58,10 +73,10 @@ const Download = () => {
 
             const emitNode = xmlDoc.getElementsByTagName('emit')[0];
             const destNode = xmlDoc.getElementsByTagName('dest')[0];
-            nfeData.emitente = emitNode ? emitNode.getElementsByTagName('xNome')[0]?.textContent : '';
-            nfeData.destinatario = destNode ? destNode.getElementsByTagName('xNome')[0]?.textContent : '';
+            nfeData.emitente = emitNode ? emitNode.getElementsByTagName('xNome')[0]?.textContent || '' : '';
+            nfeData.destinatario = destNode ? destNode.getElementsByTagName('xNome')[0]?.textContent || '' : '';
 
-            const newResult = {
+            const newResult: Result = {
               danfeUrl: pdfBase64 ? `data:application/pdf;base64,${pdfBase64}` : null,
               xmlText: xmlText,
               pdfBase64: pdfBase64,
@@ -85,7 +100,7 @@ const Download = () => {
           setError(`Erro: ${statusData.statusMessage}`);
           setLoading(false);
         }
-      } catch (err) {
+      } catch (err: any) {
         clearInterval(intervalId);
         setPolling(false);
         setError('Erro ao verificar o status da NF-e.');
@@ -94,7 +109,7 @@ const Download = () => {
     }, 2000);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -104,7 +119,7 @@ const Download = () => {
     try {
       await startNfeSearch(chave);
       pollStatus(chave);
-    } catch (err) {
+    } catch (err: any) {
       if (err.response && err.response.status === 402) {
         setError('Pagamento necessário: A chave de NFe pode ser muito antiga.');
       } else if (err.response && err.response.status === 400) {
@@ -116,7 +131,7 @@ const Download = () => {
     }
   };
 
-  const handleDownload = (blob, fileName) => {
+  const handleDownload = (blob: Blob, fileName: string) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -158,7 +173,7 @@ const Download = () => {
               value={chave} 
               onChange={(e) => setChave(e.target.value)} 
               required 
-              maxLength="44" 
+              maxLength={44} 
               className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors" 
               placeholder="Digite a chave de acesso da NF-e"
             />
@@ -191,10 +206,12 @@ const Download = () => {
               <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">Download Disponível</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <a href={result.danfeUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition-transform transform hover:scale-105">
-                    <Eye className="w-5 h-5" />
-                    <span>DANFE</span>
-                  </a>
+                  {result.danfeUrl && (
+                    <a href={result.danfeUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition-transform transform hover:scale-105">
+                      <Eye className="w-5 h-5" />
+                      <span>DANFE</span>
+                    </a>
+                  )}
                   <button onClick={handleDownloadPdf} className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition-transform transform hover:scale-105">
                     <ArrowDown className="w-5 h-5" />
                     <span>PDF</span>

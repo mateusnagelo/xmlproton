@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FileText, X, Download } from 'lucide-react';
 
 const Conversor = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [convertedData, setConvertedData] = useState<string | null>(null);
-  const [outputFormat, setOutputFormat] = useState('json');
+  const [outputFormat, setOutputFormat] = useState<'json' | 'csv'>('json');
   const [loading, setLoading] = useState(false);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -32,7 +32,7 @@ const Conversor = () => {
 
     // Simulação da conversão
     setTimeout(() => {
-      const mockConvertedData = {
+      const mockConvertedData: { json: string; csv: string } = {
         json: JSON.stringify({ nota: { numero: 123, valor: 150.5 } }, null, 2),
         csv: 'numero,valor\n123,150.50',
       };
@@ -86,7 +86,7 @@ const Conversor = () => {
               <select
                 id="outputFormat"
                 value={outputFormat}
-                onChange={(e) => setOutputFormat(e.target.value)}
+                onChange={(e) => setOutputFormat(e.target.value as 'json' | 'csv')}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="json">JSON</option>

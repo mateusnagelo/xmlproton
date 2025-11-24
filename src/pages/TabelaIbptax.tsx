@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { getTabelasIbptax } from '../services/api';
+
+interface TabelaData {
+  uf: string;
+  nomeArquivo: string;
+  vigencia: string;
+  urlDownload: string;
+}
 
 const TabelaIbptax = () => {
   const [uf, setUf] = useState('');
   const [dataVigencia, setDataVigencia] = useState('');
-  const [tabelas, setTabelas] = useState([]);
+  const [tabelas, setTabelas] = useState<TabelaData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
