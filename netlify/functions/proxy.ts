@@ -10,14 +10,15 @@ const handler: Handler = async (event: HandlerEvent) => {
   const apiPath = path.replace('/.netlify/functions/proxy', '');
 
   const apiKey = process.env.MEUDANFE_API_TOKEN;
+
   if (!apiKey) {
-    console.error('MEUDANFE_API_TOKEN not found in process.env');
     return {
       statusCode: 500,
       body: JSON.stringify({ message: 'API token is not configured.' }),
     };
   }
 
+  const { path, httpMethod, body: requestBody } = event;
   try {
     const response = await axios({
       method: httpMethod as Method,
