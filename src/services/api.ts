@@ -9,7 +9,8 @@ const api = axios.create({
 
 export const startNfeSearch = async (chave: string) => {
   try {
-    const response = await api.post(`/fd/add/${chave}`);
+    // Alterado para GET com a chave como parâmetro, baseado em documentação de APIs similares.
+    const response = await api.get('/nfe', { params: { chave } });
     return response.data;
   } catch (error) {
     console.error('Erro ao iniciar a busca da NF-e:', error);
