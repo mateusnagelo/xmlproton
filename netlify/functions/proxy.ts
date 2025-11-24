@@ -2,9 +2,6 @@ import { Handler, HandlerEvent } from '@netlify/functions';
 import axios, { Method } from 'axios';
 
 const handler: Handler = async (event: HandlerEvent) => {
-  // For debugging: Log available environment variable keys
-  console.log('Available ENV keys:', Object.keys(process.env));
-
   const { path, httpMethod, headers, body } = event;
   const externalApiUrl = 'https://api.meudanfe.com.br/v2';
   const apiPath = path.replace('/.netlify/functions/proxy', '');
@@ -18,7 +15,6 @@ const handler: Handler = async (event: HandlerEvent) => {
     };
   }
 
-  const { path, httpMethod, body: requestBody } = event;
   try {
     const response = await axios({
       method: httpMethod as Method,
