@@ -9,7 +9,7 @@ const api = axios.create({
 
 export const startNfeSearch = async (chave: string) => {
   try {
-    const response = await api.put(`/fd/add/${chave}`);
+    const response = await api.post(`/fd/add/${chave}`);
     return response.data;
   } catch (error) {
     console.error('Erro ao iniciar a busca da NF-e:', error);
@@ -19,7 +19,8 @@ export const startNfeSearch = async (chave: string) => {
 
 export const checkNfeStatus = async (chave: string) => {
   try {
-    const response = await api.put(`/fd/add/${chave}`);
+    // Corrigido para usar GET e um endpoint que provavelmente busca o status/resultado.
+    const response = await api.get(`/fd/get/${chave}`);
     return response.data;
   } catch (error) {
     console.error('Erro ao verificar o status da NF-e:', error);
