@@ -7,7 +7,7 @@ const handler: Handler = async (event: HandlerEvent) => {
   const apiPath = path.replace('/.netlify/functions/proxy', '');
 
   // Garante que o token da API seja lido corretamente das variáveis de ambiente
-  const apiKey = process.env.VITE_MEUDANFE_API_TOKEN;
+  const apiKey = process.env.MEUDANFE_API_TOKEN;
   if (!apiKey) {
     return {
       statusCode: 500,
